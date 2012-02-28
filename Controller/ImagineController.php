@@ -5,7 +5,7 @@ namespace Avalanche\Bundle\ImagineBundle\Controller;
 use Avalanche\Bundle\ImagineBundle\Imagine\CachePathResolver;
 use Avalanche\Bundle\ImagineBundle\Imagine\Filter\FilterManager;
 use Imagine\Image\ImagineInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\Util\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -33,7 +33,7 @@ class ImagineController
     private $filterManager;
 
     /**
-     * @var Symfony\Component\Filesystem\Filesystem
+     * @var Symfony\Component\HttpKernel\Util\Filesystem
      */
     private $filesystem;
 
@@ -49,7 +49,6 @@ class ImagineController
      * @param Avalanche\Bundle\ImagineBundle\Imagine\CachePathResolver $cachePathResolver
      * @param Imagine\Image\ImagineInterface                           $imagine
      * @param Avalanche\Bundle\ImagineBundle\Imagine\FilterManager     $filterManager
-     * @param Symfony\Component\Filesystem\Filesystem                  $filesystem
      * @param string                                                   $webRoot
      */
     public function __construct(
@@ -121,13 +120,14 @@ class ImagineController
                 ));
             }
         }
-
-        ob_start();
+	
+	    ob_start();
         try {
             // TODO: get rid of hard-coded quality and format
-            $this->filterManager->get($filter)
-                ->apply($this->imagine->open($sourcePath))
-                ->save($realPath, array('quality' => 100))
+	    $imageInterface = $this->imagine->open($sourcePath);
+            $this->filterManager->get($imageInterface, $filter)
+                ->apply($imageInterface)
+                ->save($realPath, array('quality' => 50))
                 ->show('png');
 
             // TODO: add more media headers

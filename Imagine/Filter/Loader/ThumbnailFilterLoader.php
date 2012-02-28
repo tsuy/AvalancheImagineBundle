@@ -4,18 +4,35 @@ namespace Avalanche\Bundle\ImagineBundle\Imagine\Filter\Loader;
 
 use Imagine\Image\Box;
 use Imagine\Image\ManipulatorInterface;
+use Imagine\Image\ImageInterface;
 use Imagine\Filter\Basic\Thumbnail;
 
 class ThumbnailFilterLoader implements LoaderInterface
 {
-    public function load(array $options = array())
+    public function load(ImageInterface $imageInteface, array $options = array())
     {
         $mode = $options['mode'] === 'inset' ?
             ManipulatorInterface::THUMBNAIL_INSET :
             ManipulatorInterface::THUMBNAIL_OUTBOUND;
-
+	
+	
+	
         list($width, $height) = $options['size'];
+	
+	
+	$size = $imageInteface->getSize();
+        $origWidth = $size->getWidth();
+        $origHeight = $size->getHeight();
 
+
+        if (null === $width || null === $height) {
+            if (null === $height) {
+                $height = (int)(($width / $origWidth) * $origHeight);
+            } else if (null === $width) {
+                $width = (int)(($height / $origHeight) * $origWidth);
+            }
+        }
+	
         return new Thumbnail(new Box($width, $height), $mode);
     }
 }

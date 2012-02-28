@@ -2,6 +2,8 @@
 
 namespace Avalanche\Bundle\ImagineBundle\Imagine\Filter\Loader;
 
+use Imagine\Image\ImageInterface;
+
 interface LoaderInterface
 {
     /**
@@ -9,5 +11,5 @@ interface LoaderInterface
      *
      * @return Imagine\Filter\FilterInterface
      */
-    function load(array $options = array());
+    function load(ImageInterface $imageInterface, array $options = array());
 }

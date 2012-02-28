@@ -26,7 +26,7 @@ class FilterManager
         $this->loaders[$name] = $loader;
     }
 
-    public function get($filter)
+    public function get($imageInterface, $filter)
     {
         if (!isset($this->filters[$filter])) {
             throw new InvalidArgumentException(sprintf(
@@ -54,6 +54,6 @@ class FilterManager
             ));
         }
 
-        return $this->loaders[$options['type']]->load($options['options']);
+        return $this->loaders[$options['type']]->load($imageInterface, $options['options']);
     }
 }
